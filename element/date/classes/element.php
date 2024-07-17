@@ -194,15 +194,15 @@ class element extends \mod_customcert\element {
             if ($dateitem == CUSTOMCERT_DATE_ISSUE) {
                 $date = $issue->timecreated;
             } else if ($dateitem == CUSTOMCERT_DATE_EXPIRY_ONE) {
-                $date = strtotime('+1 years', $issue->timecreated);
+                $date = strtotime('+1 years', $DB->get_field('course', 'enddate', ['id' => $courseid]));
             } else if ($dateitem == CUSTOMCERT_DATE_EXPIRY_TWO) {
-                $date = strtotime('+2 years', $issue->timecreated);
+                $date = strtotime('+2 years', $DB->get_field('course', 'enddate', ['id' => $courseid]));
             } else if ($dateitem == CUSTOMCERT_DATE_EXPIRY_THREE) {
-                $date = strtotime('+3 years', $issue->timecreated);
+                $date = strtotime('+3 years', $DB->get_field('course', 'enddate', ['id' => $courseid]));
             } else if ($dateitem == CUSTOMCERT_DATE_EXPIRY_FOUR) {
-                $date = strtotime('+4 years', $issue->timecreated);
+                $date = strtotime('+4 years', $DB->get_field('course', 'enddate', ['id' => $courseid]));
             } else if ($dateitem == CUSTOMCERT_DATE_EXPIRY_FIVE) {
-                $date = strtotime('+5 years', $issue->timecreated);
+                $date = strtotime('+5 years', $DB->get_field('course', 'enddate', ['id' => $courseid]));
             } else if ($dateitem == CUSTOMCERT_DATE_CURRENT_DATE) {
                 $date = time();
             } else if ($dateitem == CUSTOMCERT_DATE_COMPLETION) {
