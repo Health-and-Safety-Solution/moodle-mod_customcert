@@ -15,33 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Customcert module upgrade code.
+ * Privacy Subsystem implementation for customcertelement_expiry.
  *
- * @package    mod_customcert
- * @copyright  2024 Mohamed Atia <matia12@gmail.com>
+ * @package    customcertelement_expiry
+ * @copyright  2024 Leon Stringer <leon.stringer@ntlworld.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace customcertelement_expiry\privacy;
+
 /**
- * Customcert module upgrade code.
+ * Privacy Subsystem for customcertelement_expiry implementing null_provider.
  *
- * @param int $oldversion the version we are upgrading from
- * @return bool always true
+ * @copyright  2024 Leon Stringer <leon.stringer@ntlworld.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class provider implements \core_privacy\local\metadata\null_provider {
 
-/**
- * Custom code to be run on installing the plugin.
- */
-function xmldb_customcert_install() {
-    global $DB;
-
-    // Add a default row to the customcert_email_task_prgrs table.
-    $defaultdata = new stdClass();
-    $defaultdata->taskname = 'email_certificate_task';
-    $defaultdata->last_processed = 0;
-    $defaultdata->total_certificate_to_process = 0;
-
-    // Insert the default data into the table.
-    $DB->insert_record('customcert_email_task_prgrs', $defaultdata);
-    return true;
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason(): string {
+        return 'privacy:metadata';
+    }
 }
