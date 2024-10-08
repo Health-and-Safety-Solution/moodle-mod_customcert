@@ -295,6 +295,9 @@ class element extends \mod_customcert\element {
                 }
             }
         } else { // Expiry date calculated from certificate award date.
+	    $courseid = \mod_customcert\element_helper::get_courseid($this->id);
+	    $starttime = $DB->get_field('course', 'enddate', ['id' => $courseid]);
+	    if (empty($starttime)) {
             // Get the page.
             $page = $DB->get_record('customcert_pages', ['id' => $this->get_pageid()], '*', MUST_EXIST);
             // Get the customcert this page belongs to.
@@ -303,6 +306,7 @@ class element extends \mod_customcert\element {
             $issue = $DB->get_record('customcert_issues', ['userid' => $userid, 'customcertid' => $customcert->id],
                 '*', IGNORE_MULTIPLE);
             $starttime = $issue->timecreated;
+	    }
         }
 
         if (is_null($starttime)) {
