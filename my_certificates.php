@@ -51,10 +51,19 @@ if ($courseid) {
 
 // Check that we have a valid user.
 $user = \core_user::get_user($userid, '*', MUST_EXIST);
+//Begin Customisation: Accellier: Check if manager then allow to download certificates only of the related company
+$context = context_system::instance();
+$companyid = iomad::get_my_companyid($context);
+//End Customisation
 
 // If we are viewing certificates that are not for the currently logged in user then do a capability check.
 if (($userid != $USER->id) && !has_capability('mod/customcert:viewallcertificates', context_system::instance())) {
-    throw new moodle_exception('You are not allowed to view these certificates');
+    //Begin Customisation: Accellier: Check if manager then allow to download certificates only of the related company
+    $if_manager = $DB->get_record('company_users', ['userid' => $USER->id, 'companyid' => $companyid]);
+    if ($if_manager->managertype <= 0) {
+	throw new moodle_exception('You are not allowed to view these certificates');
+    }
+    //End Customisation
 }
 
 $PAGE->set_url($pageurl);
