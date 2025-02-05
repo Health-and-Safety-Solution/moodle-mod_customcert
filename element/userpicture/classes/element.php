@@ -123,13 +123,16 @@ class element extends \mod_customcert\element {
         }
 
 	//Begin Customisation: Print Company Seal/Logo in certificate generated for the company
-	$preview = '';
-	$sitecontext = \context_system::instance();
-	$fs = get_file_storage();
-	if ($files = $fs->get_area_files($sitecontext->id, 'local_iomad', 'companycertificateseal', FALSE, 'sortorder DESC, id DESC', false)) {
-		if (!count($files) < 1) {
-		        $file = reset($files);
-		        unset($files);
+	global $DB;
+	if ($company_users = $DB->get_record('company_users', ['userid' => $user->id])) {
+		$preview = '';
+		$sitecontext = \context_system::instance();
+		$fs = get_file_storage();
+		if ($files = $fs->get_area_files($sitecontext->id, 'local_iomad', 'companycertificateseal', $company_users->companyid, 'sortorder DESC, id DESC', false)) {
+			if (!count($files) < 1) {
+			        $file = reset($files);
+		        	unset($files);
+			}
 		}
 	}
 	//End Customisation
