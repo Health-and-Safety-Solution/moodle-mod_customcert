@@ -56,6 +56,12 @@ $context = context_system::instance();
 $companyid = iomad::get_my_companyid($context);
 //End Customisation
 
+//Begin Customisation: Accellier: Check if user is allowed to download certificates
+if (($userid == $USER->id) && !has_capability('mod/customcert:view', context_system::instance())) {
+	throw new moodle_exception('You are not allowed to view the certificates');
+}
+//End Customization
+
 // If we are viewing certificates that are not for the currently logged in user then do a capability check.
 if (($userid != $USER->id) && !has_capability('mod/customcert:viewallcertificates', context_system::instance())) {
     //Begin Customisation: Accellier: Check if manager then allow to download certificates only of the related company
