@@ -36,6 +36,35 @@ if ($downloadcert) {
     if (!$issue = $DB->get_record('customcert_issues', ['userid' => $userid, 'customcertid' => $customcert->id])) {
         throw new moodle_exception('You have not been issued a certificate');
     }
+
+    //Begin Customisation: Accellier: Check if user allowed to download certificate in this company or course
+    $donotemailcert = 0;
+    $user_companys = $DB->get_records('company_users', ['userid' => $USER->id]);
+    foreach ($user_companys as $user_company) {
+    	$companydetails = $DB->get_record('company', ['id' => $user_company->companyid]);
+        if (!(empty($companydetails->custom1))) {
+        	if ($user_company->managertype <= 0) {
+			$donotemailcert = 1;
+        	}
+        }
+    }
+    if ($donotemailcert == 1) {
+	throw new moodle_exception('Your certificate will be emailed by our admin team. For any further questions please contact the admin team.', 'Certificate');
+    }
+    /*$context = context_system::instance();
+    $companyid = iomad::get_my_companyid($context);
+    $companydetails = $DB->get_record('company', ['id' => $companyid]);
+    if (!(empty($companydetails->custom1))) {
+	$if_manager = $DB->get_record('company_users', ['userid' => $USER->id, 'companyid' => $companyid]);
+    	if ($if_manager->managertype <= 0) {
+		throw new moodle_exception('You are not allowed to download the certificate. Please contact the admin team.', 'Certificate');
+	}
+    }*/
+    $cooursecertdetails = $DB->get_record('customfield_data', ['fieldid' => 6, 'instanceid' => $customcert->course]);
+    if (!(empty($cooursecertdetails->value))) {
+        throw new moodle_exception('Your certificate will be emailed by our admin team. For any further questions please contact the admin team.', 'Certificate');
+    }
+    //End Customisation
 }
 $page = optional_param('page', 0, PARAM_INT);
 $perpage = optional_param('perpage', \mod_customcert\certificate::CUSTOMCERT_PER_PAGE, PARAM_INT);

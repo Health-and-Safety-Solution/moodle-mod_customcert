@@ -48,6 +48,38 @@ $canreceive = has_capability('mod/customcert:receiveissue', $context);
 $canmanage = has_capability('mod/customcert:manage', $context);
 $canviewreport = has_capability('mod/customcert:viewreport', $context);
 
+//Begin Customisation: Accellier: Check if user allowed to download certificate in this company or course
+if ($canmanage == 1) {
+} else {
+	/*$context_sys = context_system::instance();
+	$companyid = iomad::get_my_companyid($context_sys);
+	$companydetails = $DB->get_record('company', ['id' => $companyid]);
+	if (!(empty($companydetails->custom1))) {
+        	$if_manager = $DB->get_record('company_users', ['userid' => $USER->id, 'companyid' => $companyid]);
+        	if ($if_manager->managertype <= 0) {
+                	throw new moodle_exception('You are not allowed to download the certificate. Please contact the admin team.', 'Certificate');
+	        }
+	}*/
+	$donotemailcert = 0;
+	$user_companys = $DB->get_records('company_users', ['userid' => $USER->id]);
+	foreach ($user_companys as $user_company) {
+        	$companydetails = $DB->get_record('company', ['id' => $user_company->companyid]);
+        	if (!(empty($companydetails->custom1))) {
+                	if ($user_company->managertype <= 0) {
+                        	$donotemailcert = 1;
+                	}
+        	}
+    	}
+    	if ($donotemailcert == 1) {
+        	throw new moodle_exception('Your certificate will be emailed by our admin team. For any further questions please contact the admin team.', 'Certificate');
+    	}
+	$cooursecertdetails = $DB->get_record('customfield_data', ['fieldid' => 6, 'instanceid' => $customcert->course]);
+	if (!(empty($cooursecertdetails->value))) {
+        	throw new moodle_exception('Your certificate will be emailed by our admin team. For any further questions please contact the admin team.', 'Certificate');
+	}
+}
+//End Customisation
+
 // Initialise $PAGE.
 $pageurl = new moodle_url('/mod/customcert/view.php', ['id' => $cm->id]);
 \mod_customcert\page_helper::page_setup($pageurl, $context, format_string($customcert->name));

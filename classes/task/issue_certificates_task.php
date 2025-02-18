@@ -185,6 +185,24 @@ class issue_certificates_task extends \core\task\scheduled_task {
                 $issueid = empty($issue) ?
                     \mod_customcert\certificate::issue_certificate($customcert->id, $filtereduser->id) : $issue->id;
 
+		//Begin Customisation: Accellier: Check if user allowed to download certificate in this company or course
+		$donotemailcert = 0;
+		$user_companys = $DB->get_records('company_users', ['userid' => $filtereduser->id]);
+		foreach ($user_companys as $user_company) {
+			$companydetails = $DB->get_record('company', ['id' => $user_company->companyid]);
+			if (!(empty($companydetails->custom1))) {
+				$donotemailcert = 1;
+			}
+		}
+		if ($donotemailcert == 1) {
+			continue;
+		}
+		$cooursecertdetails = $DB->get_record('customfield_data', ['fieldid' => 6, 'instanceid' => $customcert->courseid]);
+		if (!(empty($cooursecertdetails->value))) {
+			continue;
+		}
+		//End Customisation
+
                 // Validate issueid and one last check for emailed.
                 if (!empty($issueid) && empty($issue->emailed)) {
                     // We create a new adhoc task to send the email.
