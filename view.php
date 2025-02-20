@@ -71,11 +71,11 @@ if ($canmanage == 1) {
         	}
     	}
     	if ($donotemailcert == 1) {
-        	throw new moodle_exception('Your certificate will be emailed by our admin team. For any further questions please contact the admin team.', 'Certificate');
+        	throw new moodle_exception('Your certificate will be emailed to your course booker/employer.','Infornation');
     	}
 	$cooursecertdetails = $DB->get_record('customfield_data', ['fieldid' => 6, 'instanceid' => $customcert->course]);
 	if (!(empty($cooursecertdetails->value))) {
-        	throw new moodle_exception('Your certificate will be emailed by our admin team. For any further questions please contact the admin team.', 'Certificate');
+		throw new moodle_exception('Your certificate will be emailed to your course booker/employer.','Infornation');
 	}
 }
 //End Customisation
