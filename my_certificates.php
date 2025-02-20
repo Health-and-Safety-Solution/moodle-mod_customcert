@@ -38,6 +38,7 @@ if ($downloadcert) {
     }
 
     //Begin Customisation: Accellier: Check if user allowed to download certificate in this company or course
+    if (!(has_capability('mod/customcert:viewallcertificates', context_system::instance()))) {
     $donotemailcert = 0;
     $user_companys = $DB->get_records('company_users', ['userid' => $USER->id]);
     foreach ($user_companys as $user_company) {
@@ -49,7 +50,7 @@ if ($downloadcert) {
         }
     }
     if ($donotemailcert == 1) {
-	throw new moodle_exception('Your certificate will be emailed to your course booker/employer.', 'Certificate');
+	throw new moodle_exception('Your certificate will be emailed to your course booker/employer.', 'Information');
     }
     /*$context = context_system::instance();
     $companyid = iomad::get_my_companyid($context);
@@ -62,7 +63,8 @@ if ($downloadcert) {
     }*/
     $cooursecertdetails = $DB->get_record('customfield_data', ['fieldid' => 6, 'instanceid' => $customcert->course]);
     if (!(empty($cooursecertdetails->value))) {
-        throw new moodle_exception('Your certificate will be emailed to your course booker/employer.', 'Certificate');
+        throw new moodle_exception('Your certificate will be emailed to your course booker/employer.', 'Information');
+    }
     }
     //End Customisation
 }
